@@ -27,7 +27,7 @@ router.post('/login', async (req: Request, res: Response) => {
             where:{
                 correo:dataValidate.correo,
                 contrasena:dataValidate.contrasena
-            }
+            },
         });
         
         if(!userFind){
@@ -46,7 +46,7 @@ router.post('/login', async (req: Request, res: Response) => {
             data: {
                 id: userFind.id,
                 nombre: userFind.nombre,
-                rol: userFind.rol
+                rol: userFind.rolId.toString()
             }
         }
         return res.status(200).json(responseOk);

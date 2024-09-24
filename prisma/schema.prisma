@@ -21,20 +21,19 @@ model Usuario {
   correo        String   @unique
   contrasena    String
   estatus       Estatus  @default(ACTIVO) // Puede ser "Activo" o "Inactivo"
-  rol           Rol
+  rol           Rol      @relation(fields: [rolId], references: [id])
   fechaCreacion DateTime @default(now())
+  rolId         Int
+}
+
+model Rol {
+  id          Int       @id @default(autoincrement())
+  nombre      String
+  descripcion String?
+  Usuario     Usuario[]
 }
 
 enum Estatus {
   ACTIVO
   INACTIVO
-}
-
-enum Rol {
-  ASPIRANTE
-  ALUMNO
-  SERVICIOS_ESCOLARES
-  PROFESOR
-  RECURSOS_HUMANOS
-  TI
 }

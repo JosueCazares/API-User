@@ -51,7 +51,14 @@ router.post('/', async (req: Request, res: Response) => {
         }
         //CREACIO DE USUARIO
         let newUser = await prisma.usuario.create({
-            data: dataValidate
+            data: {
+                ...dataValidate,
+                rol:{
+                    connect:{
+                        id: dataValidate.rol
+                    }
+                }
+            }
         });
         //RESPUESTA TIPADA 
         let responseOk:APIResponse<Usuario> = {
@@ -118,7 +125,17 @@ router.put('/', async (req: Request, res: Response) => {
             where: {
                 id: dataValidate.id
             },
-            data: dataValidate
+            data:{
+                nombre: dataValidate.nombre,
+                correo: dataValidate.correo,
+                estatus: dataValidate.estatus,
+                contrasena: dataValidate.contrasena,
+                rol:{
+                    connect:{
+                        id: dataValidate.rol
+                    }
+                }
+            }
         });
         //RESPUESTA TIPADA 
         let responseOk:APIResponse<Usuario> = {
