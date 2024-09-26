@@ -22,7 +22,7 @@ router.post('/login', async (req: Request, res: Response) => {
     }
     try{
         const dataValidate = ZodAccessObj.parse(req.body);
-
+        //console.log(dataValidate);
         const userFind = await prisma.usuario.findUnique({
             where:{
                 correo:dataValidate.correo,
