@@ -71,8 +71,10 @@ router.post('/', async (req:Request, res:Response) => {
                 error: "Datos invalidos",
                 data: error.errors
             }
+            console.log(error);
             return res.status(400).json(responseErrorZod)
         }
+        console.log(error);
         return res.status(500).json(responseError)
     }
 });

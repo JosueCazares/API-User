@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { prisma } from '../db'
-import type { APIResponse } from '../lib/types';
+import type { APIResponse,UsuarioSinPass } from '../lib/types';
 import type { Usuario } from '@prisma/client';
 import {ZodUsuarioObj,ZodUsuarioIdObj} from '@/validation/ZodUsuario'
 import { z, type ZodIssue } from 'zod';
@@ -12,9 +12,26 @@ export const router = Router();
 router.get('/',validacionToken, async (_: Request, res: Response) => {
     try{
 
-        let usuarios = await prisma.usuario.findMany();
+        let usuarios = await prisma.usuario.findMany({
+            select:{
+                id: true,
+                createdAt: true,
+                updatedAt: true,
+                nombre: true,
+                correo: true,
+                contrasena: true,
+                estatus: true,
+                fechaCreacion: true,
+                rolId: false,
+                rol: {
+                    select: {
+                        nombre: true
+                    }
+                }
+            }
+        });
 
-        let responseOk: APIResponse<Usuario[]> = {
+        let responseOk: APIResponse<UsuarioSinPass[]> = {
             status: 'success',
             data: usuarios
         }
@@ -32,11 +49,13 @@ router.get('/',validacionToken, async (_: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
     try{
         //VALIDACION DE DATOS
+        console.log(req.body);
         const dataValidate = ZodUsuarioObj.parse(req.body)
         //BUSCAR USUARIO PARA VALIDAR DUPLICIDAD DE CORREOS
         let userFind = await prisma.usuario.findFirst({
             where:{
                 OR: [
+                    {nombre: dataValidate.nombre},
                     {correo: dataValidate.correo}
                 ]
             }
@@ -55,7 +74,7 @@ router.post('/', async (req: Request, res: Response) => {
                 ...dataValidate,
                 rol:{
                     connect:{
-                        id: dataValidate.rol
+                       id: dataValidate.rol
                     }
                 }
             }
@@ -78,8 +97,10 @@ router.post('/', async (req: Request, res: Response) => {
                 error: "Datos invalidos",
                 data: error.errors
             }
+            console.log(error);
             return res.status(400).json(responseErrorZod)
         }
+        console.log(error);
         return res.status(500).json(responseError)
     }
 });
@@ -88,6 +109,7 @@ router.put('/', async (req: Request, res: Response) => {
     try{
         //VALIDACION DE DATOS
         const dataValidate = ZodUsuarioIdObj.parse(req.body)
+        
         //Busqueda de usuario actual
         let userFind = await prisma.usuario.findUnique({
             where:{
@@ -119,7 +141,20 @@ router.put('/', async (req: Request, res: Response) => {
             };
             return res.status(400).json(responseError);
         }
+        let rolFInd = await prisma.rol.findFirst({
+            where:{
+                id: dataValidate.rol
+            }
+        })
 
+        if(!rolFInd){
+            let responseError:APIResponse<null> = {
+                status: "error",
+                error: "El rol no existe"
+            }
+            console.log(responseError);
+            return res.status(400).json(responseError);
+        }
         // ACTUALIZACION DE USUARIO
         let userUpdate = await prisma.usuario.update({
             where: {
@@ -155,8 +190,10 @@ router.put('/', async (req: Request, res: Response) => {
                 error: "Datos invalidos",
                 data: error.errors
             }
+            console.log(error);
             return res.status(400).json(responseErrorZod)
         }
+        console.log(error);
         return res.status(500).json(responseError)
     }
 });

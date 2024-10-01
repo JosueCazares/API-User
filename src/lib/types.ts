@@ -16,6 +16,21 @@ export interface LoginResponseData {
     username: string;
 }
 
+export interface UsuarioSinPass{
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    nombre: string;
+    correo: string;
+    contrasena: string;
+    estatus: string;
+    fechaCreacion: Date;
+    rol: {
+        nombre: string;
+    };
+}
+
+
 export type{
     Usuario,
     Rol,
