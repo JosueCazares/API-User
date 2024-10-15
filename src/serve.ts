@@ -2,11 +2,15 @@ import express from 'express';
 import type { Express, Response } from 'express';
 import cors from 'cors';
 import { env } from './env';
-
+import path from 'path';
 
 export const app: Express = express();
 
+app.use(express.urlencoded({extended: true}))
 app.use(express.json())
+app.use('/uploads',express.static(path.join(__dirname,'..', 'uploads')));
+
+
 
 //use cors
 // define whitelist from env

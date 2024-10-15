@@ -16,3 +16,8 @@ export const ZodUsuarioIdObj = z.object({
     estatus :z.enum([Estatus.ACTIVO, Estatus.INACTIVO]),
     rol :z.number(),    
 });
+
+export const ZodUserPassObj = z.object({
+    token: z.string().min(8),
+    nuevaPass: z.string().min(8),
+})

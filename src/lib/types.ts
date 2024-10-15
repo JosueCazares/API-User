@@ -1,6 +1,7 @@
  import type{
     Usuario,
     Rol,
+    Libro,
 } from '@prisma/client'; 
 
 export type APIResponse<T> = {
@@ -34,4 +35,5 @@ export interface UsuarioSinPass{
 export type{
     Usuario,
     Rol,
+    Libro
 }
