@@ -4,15 +4,16 @@ import type { APIResponse,Libro } from '../lib/types';
 import { z, type ZodIssue } from 'zod';
 import  {ZodLibroObj,ZodLibroObjPut,ZodLibroObjFile} from '@/validation/ZodLibro'
 import {upload} from "@/lib/files"
- 
-export const router = Router();
+import {PrismaLibroDao} from '@/dao/PrismaLibroDao' 
 
+
+export const router = Router();
+const libroDao = new PrismaLibroDao();
 
 router.get('/', async (_: Request, res: Response) => {
     try{
 
-        let libro = await prisma.libro.findMany({
-        });
+        let libro = await libroDao.getAll();
 
         let responseOk: APIResponse<Libro[]> = {
             status: 'success',
