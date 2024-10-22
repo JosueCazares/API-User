@@ -14,7 +14,7 @@ export class PrismaLibroDao implements LibreriaDao {
         });
     }
 
-    async create(libroData: Libro): Promise<Libro> {
+    async create(libroData: Omit<Libro,'id'|'createdAt'|'updatedAt'>): Promise<Libro> {
         return prisma.libro.create({
             data: libroData
         });
