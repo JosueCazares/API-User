@@ -7,3 +7,11 @@ export interface CreateLibroDto{
     estatus :  Estatus, 
     url ?  :    string
 }
+export interface UpdateLibroDto{
+    id     :   number,
+    titulo :   string,
+    autor  :   string,
+    genero :   string,
+    estatus :  Estatus, 
+    url ?  :    string
+}

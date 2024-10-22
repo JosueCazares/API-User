@@ -42,3 +42,39 @@ export const createLibro = async (req: Request, res: Response) => {
             return res.status(500).json(responseError)
         }
 }
+export const updateLibro = async (req: Request, res: Response) => {
+    try{
+       
+        if (!req.file) {
+            return res.status(400).json({
+              status: 'error',
+              message: 'No se subió ningún archivo.'
+            });
+        }
+
+        const command = new CreateLibroCommand();
+        const newLibro = await command.execute(req.body,req.file.path);
+
+        let responseOk: APIResponse<Libro> = {
+            status: 'success',
+            data: newLibro
+        }
+        return res.status(201).json(responseOk)
+        } catch (error) {
+            let responseError: APIResponse<Error> = {
+                status: "error",
+                error: "Error en el servidor"
+            }
+            if (error instanceof z.ZodError) {
+                let responseErrorZod:APIResponse<ZodIssue[]> = {
+                    status: "error",
+                    error: "Datos invalidos",
+                    data: error.errors
+                }
+                console.log(error);
+                return res.status(400).json(responseErrorZod)
+            }
+            console.log(error);
+            return res.status(500).json(responseError)
+        }
+}
