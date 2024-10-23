@@ -1,11 +1,12 @@
 import {prisma} from '@/db/index'
 import { Router, type Request, type Response } from 'express';
-import type { APIResponse,Libro } from '../lib/types';
+import type { APIResponse,Libro, LibroMvvm } from '../lib/types';
 import { z, type ZodIssue } from 'zod';
 import  {ZodLibroObj,ZodLibroObjPut,ZodLibroObjFile} from '@/validation/ZodLibro'
 import {upload} from "@/lib/files"
 import {PrismaLibroDao} from '@/dao/PrismaLibroDao' 
 import {createLibro} from '@/controller/LibroController'
+import {LibroViewModel} from '@/viewmodels/LibroViewModel'
 
 export const router = Router();
 const libroDao = new PrismaLibroDao();
@@ -19,6 +20,27 @@ router.get('/', async (_: Request, res: Response) => {
             status: 'success',
             data: libro
         }
+        return res.status(200).json(responseOk)
+    } catch (error) {
+        let responseError: APIResponse<Error> = {
+            status: "error",
+            error: "Error en el servidor"
+        }
+        return res.status(500).json(responseError)
+    }
+});
+router.get('/public', async (_: Request, res: Response) => {
+    try{
+
+        let libros = await libroDao.getAll();
+
+        const libroDto = libros.map(libro => LibroViewModel.toDto(libro))
+
+        let responseOk: APIResponse<LibroMvvm[]> = {
+            status: 'success',
+            data: libroDto
+        }
+
         return res.status(200).json(responseOk)
     } catch (error) {
         let responseError: APIResponse<Error> = {

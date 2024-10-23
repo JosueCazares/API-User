@@ -1,9 +1,9 @@
 import {Estatus} from '@prisma/client'
 
 export interface CreateLibroDto{
-    titulo :   string,
-    autor  :   string,
-    genero :   string,
-    estatus :  Estatus, 
+    tituloMvvm :   string,
+    autorMvvm  :   string,
+    generoMvvm :   string,
+    estatusMvvm :  Estatus, 
     url ?  :    string
 }
