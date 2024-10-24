@@ -8,9 +8,10 @@ export class PrismaLibroDao implements LibreriaDao {
         return prisma.libro.findMany();
     }
 
-    async getById(id: number): Promise<Libro | null> {
+    async getById(id: string): Promise<Libro | null> {
+        let newId = parseInt(id);
         return prisma.libro.findUnique({
-            where: { id }
+            where: { id:newId }
         });
     }
 
@@ -20,16 +21,19 @@ export class PrismaLibroDao implements LibreriaDao {
         });
     }
 
-    async update(id: number, libroData: Libro): Promise<Libro | null> {
+    async update(id: string, libroData: Omit<Libro, 'id' | 'createdAt' | 'updatedAt'>): Promise<Libro> {
+        let newId = parseInt(id);
         return prisma.libro.update({
-            where: { id },
+            where: { id: newId },
             data: libroData
         });
     }
 
-    async delete(id: number): Promise<void> {
-        await prisma.libro.delete({
-            where: { id }
+    async delete(id: string): Promise<Libro> {
+        let newId = parseInt(id);
+        return await prisma.libro.update({
+            where: { id: newId },
+            data: {estatus:'INACTIVO'}
         });
     }
 

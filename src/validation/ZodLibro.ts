@@ -22,3 +22,7 @@ export const ZodLibroObjFile = z.object({
     originalname: z.string().min(1, "Nombre de archivo no encontrado"),
     path: z.string().min(1, "Ruta de archivo no encontrada"),
   });
+
+export const ZodLibroObjDelete = z.object({
+    id: z.string()
+})  
