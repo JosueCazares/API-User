@@ -1,8 +1,6 @@
 import {prisma} from '@/db/index'
 import { Router, type Request, type Response } from 'express';
 import type { APIResponse,Libro } from '../lib/types';
-import { z, type ZodIssue } from 'zod';
-import  {ZodLibroObj,ZodLibroObjPut,ZodLibroObjFile} from '@/validation/ZodLibro'
 import {upload} from "@/lib/files"
 import {PrismaLibroDao} from '@/dao/PrismaLibroDao' 
 import {createLibro,updateLibro,deleteLibro} from '@/controller/LibroController'
@@ -33,7 +31,7 @@ router.post('/',upload.single('pdf'),createLibro);
 
 router.put('/',upload.single('pdf'), updateLibro);
 
-
+//ENDPOIJT PARA PRUEBAS DE SUBIR PDF SOLAMENTE
 router.post('/file', upload.single('file'), async (req: Request, res: Response) => {
     try{
         if (!req.file) {
@@ -55,4 +53,4 @@ router.post('/file', upload.single('file'), async (req: Request, res: Response) 
     }
 })
 
-router.delete('',deleteLibro)
+router.delete('/',deleteLibro)

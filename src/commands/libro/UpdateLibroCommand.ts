@@ -1,6 +1,4 @@
-import {prisma} from '@/db/index'
 import type {Libro} from '@prisma/client'
-import type {UpdateLibroDto} from '@/dtos/LibroDto'
 import {PrismaLibroDao} from '@/dao/PrismaLibroDao'
 import {ZodLibroObjPut} from '@/validation/ZodLibro'
 import {z} from 'zod'

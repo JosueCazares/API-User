@@ -1,6 +1,6 @@
 import type { Libro } from "@prisma/client";
 
-export interface LibreriaDao {
+export interface LibroDao {
    getAll(): Promise<Libro[]>;
    getById(id: string): Promise<Libro | null>;
    create(libroData: Libro): Promise<Libro>; 
