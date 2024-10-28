@@ -1,9 +1,10 @@
 import {prisma} from '@/db/index'
 import { Router, type Request, type Response } from 'express';
-import type { APIResponse,Libro } from '../lib/types';
+import type { APIResponse,Libro,LibroMVVM } from '../lib/types';
 import {upload} from "@/lib/files"
 import {PrismaLibroDao} from '@/dao/PrismaLibroDao' 
 import {createLibro,updateLibro,deleteLibro} from '@/controller/LibroController'
+import {LibroViewModel} from '@/viewModels/LibroViewModel'
 
 export const router = Router();
 const libroDao = new PrismaLibroDao();
@@ -11,11 +12,13 @@ const libroDao = new PrismaLibroDao();
 router.get('/', async (_: Request, res: Response) => {
     try{
 
-        let libro = await libroDao.getAll();
+        let libros = await libroDao.getAll();
 
-        let responseOk: APIResponse<Libro[]> = {
+        const libroDto = libros.map((libro) => LibroViewModel.toDto(libro));
+
+        let responseOk: APIResponse<LibroMVVM[]> = {
             status: 'success',
-            data: libro
+            data: libroDto
         }
         return res.status(200).json(responseOk)
     } catch (error) {

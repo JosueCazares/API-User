@@ -2,6 +2,7 @@ import type { APIResponse } from '@/lib/types';
 import type { Estatus,Rol } from '@prisma/client';
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import type { Usuario } from '@prisma/client';
 
 const secret = process.env.SECRET;
 
@@ -55,3 +56,10 @@ export function validacionToken(req: CustomRequest, res: Response, next: NextFun
         }
     });
 };
+
+export function generarToken(usuarioBusq: Usuario, time: string): string {
+    if (typeof secret === 'undefined') {
+        throw new Error('secret undefined');
+    }
+    return jwt.sign(usuarioBusq, secret, { expiresIn: time });
+}

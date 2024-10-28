@@ -2,6 +2,7 @@
     Usuario,
     Rol,
     Libro,
+    Estatus,
 } from '@prisma/client'; 
 
 export type APIResponse<T> = {
@@ -31,7 +32,19 @@ export interface UsuarioSinPass{
     };
 }
 
+export interface LibroMVVM{
+    nombreLibro: string;
+    autor:string;
+    genero:string;
+    estatus:Estatus;
+    archivoPdf:string | null;
+}
 
+export type UsuarioLog = {
+    id: number;
+    nombre: string;
+    rol: string;
+};
 export type{
     Usuario,
     Rol,
