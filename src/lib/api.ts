@@ -3,7 +3,7 @@ T representa un Tipo generico, es decir, permite al desarrollador definir el typ
 Este type debe coincidir con el type que ustedes definan para las respuestas de la API y la respuesta siempre debe tener una misma estructura para funcionar correctamente.
 */
 export async function httpAPI<T>(endpoint: string, method: 'GET' | 'POST' | 'DELETE' | 'PUT', body?: any, headers: HeadersInit = {},baseUrl?:string,isFormData: boolean = false): Promise<T> {
-    console.log('api'+baseUrl);
+   // console.log('api'+baseUrl);
     const apiUrl = baseUrl || import.meta.env.VITE_API_URL
     const opciones: RequestInit = {
         method,

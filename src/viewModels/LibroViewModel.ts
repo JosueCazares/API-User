@@ -1,7 +1,7 @@
 import type { Libro } from "@prisma/client";
 
 export class LibroViewModel{
-  static toDto(libro:Libro){
+  static toDto(libro:Partial<Libro>):LibroViewModel{
     return{
       nombreLibro:libro.titulo,
       autor:libro.autor,

@@ -22,17 +22,11 @@ export class PrismaLibroDao implements LibroDao {
 
     async getAllPublicTodo(): Promise<LibroViewModel[] > {
         let libroLocal = await prisma.libro.findMany();
-        let libroExterno = await this.librosExternosService.getAll();
-
-        const todosLosLibros: LibroViewModel[] = [
-            ...libroLocal.map((libro: Libro) => ({
-                id: libro.id,
-                titulo: libro.titulo,
-                autor: libro.autor,
-                // Map other necessary properties
-            })),
-            ...libroExterno
-        ];
+        const libroLocalDto = libroLocal.map((libro) => LibroViewModel.toDto(libro));
+        
+        const librosExternos = await this.librosExternosService.getAll();
+      
+        const todosLosLibros: LibroViewModel[] = [...libroLocalDto, ...librosExternos];
 
         return todosLosLibros;
     }

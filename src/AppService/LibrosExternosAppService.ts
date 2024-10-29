@@ -8,15 +8,10 @@ export class LibrosExternosAppService{
     async getAll():Promise <LibroViewModel[]>{
     try{
         const response = await httpAPI<APIResponse<LibroViewModel[]>>('/', 'GET',undefined,{},API);
+       // console.log(response);
         
-        const librosExternos: LibroViewModel[] = response.data?.map((libroExterno: any) => ({
-            id: libroExterno.id,
-            titulo: libroExterno.titulo,
-            autor: libroExterno.autor,
-            
-          })) ?? [];
 
-        return librosExternos;
+        return response.data ?? [];
     }catch(e){
         console.error('Error en getUsuarios =>', e);
         throw e;
