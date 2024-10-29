@@ -1,37 +1,25 @@
-import {prisma} from '@/db/index'
 import { Router, type Request, type Response } from 'express';
-import type { APIResponse,Libro,LibroMVVM } from '../lib/types';
+import type { APIResponse, } from '../lib/types';
 import {upload} from "@/lib/files"
 import {PrismaLibroDao} from '@/dao/PrismaLibroDao' 
-import {createLibro,updateLibro,deleteLibro} from '@/controller/LibroController'
-import {LibroViewModel} from '@/viewModels/LibroViewModel'
+import {createLibro,updateLibro,deleteLibro,getAllPublicTodoLibro,getAllPublicLibro,getAllLibro} from '@/controller/LibroController'
 
 export const router = Router();
 const libroDao = new PrismaLibroDao();
 
-router.get('/', async (_: Request, res: Response) => {
-    try{
+//ENDPOINT PARA OBTENER TODOS LOS LIBROS SIN IMPORTAR SI SON PUBLICOS O NO
+router.get('/',getAllLibro)
 
-        let libros = await libroDao.getAll();
+//ENDPOINT PARA OBTENER TODOS LOS LIBROS CON CAMPOS PUBLICOS 
+router.get('/Public', getAllPublicLibro);
 
-        const libroDto = libros.map((libro) => LibroViewModel.toDto(libro));
+//ENDPOINT PARA OBTENER TODOS LOS LIBROS CON CAMPOS PUBLICOS Y DE LIBROS EXTERNOS
+router.get('/AllPublic', getAllPublicTodoLibro);
 
-        let responseOk: APIResponse<LibroMVVM[]> = {
-            status: 'success',
-            data: libroDto
-        }
-        return res.status(200).json(responseOk)
-    } catch (error) {
-        let responseError: APIResponse<Error> = {
-            status: "error",
-            error: "Error en el servidor"
-        }
-        return res.status(500).json(responseError)
-    }
-});
-
+//ENDPOINT PARA CREAR LIBRO
 router.post('/',upload.single('pdf'),createLibro);
 
+//ENDPOINT PARA ACTUALIZAR LIBRO
 router.put('/',upload.single('pdf'), updateLibro);
 
 //ENDPOIJT PARA PRUEBAS DE SUBIR PDF SOLAMENTE
@@ -56,4 +44,5 @@ router.post('/file', upload.single('file'), async (req: Request, res: Response) 
     }
 })
 
+//ENDPOINT PARA ELIMINAR LIBRO DE MANERA LOGICA
 router.delete('/',deleteLibro)

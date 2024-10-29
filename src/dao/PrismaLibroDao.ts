@@ -1,11 +1,40 @@
 import type {LibroDao} from '@/dao/LibroDao'
 import { prisma } from '@/db/index';
 import type { Libro } from '@prisma/client';
+import {LibroViewModel} from '@/viewModels/LibroViewModel'
+import {LibrosExternosAppService} from '@/AppService/LibrosExternosAppService'
 
 export class PrismaLibroDao implements LibroDao {
+    private librosExternosService: LibrosExternosAppService;
 
+    constructor() {
+      this.librosExternosService = new LibrosExternosAppService();
+    }
     async getAll(): Promise<Libro[]> {
         return prisma.libro.findMany();
+    }
+
+    async getAllPublic(): Promise<LibroViewModel[]> {
+        let libros = await prisma.libro.findMany();
+        const libroDto = libros.map((libro) => LibroViewModel.toDto(libro));
+        return libroDto;
+    }
+
+    async getAllPublicTodo(): Promise<LibroViewModel[] > {
+        let libroLocal = await prisma.libro.findMany();
+        let libroExterno = await this.librosExternosService.getAll();
+
+        const todosLosLibros: LibroViewModel[] = [
+            ...libroLocal.map((libro: Libro) => ({
+                id: libro.id,
+                titulo: libro.titulo,
+                autor: libro.autor,
+                // Map other necessary properties
+            })),
+            ...libroExterno
+        ];
+
+        return todosLosLibros;
     }
     //SE PUSO EL ID COMO STRING POR QUE EN EL POSTMAN NO ME DEJABA MANDAR COMO NUMERO SOLO CADENA
     async getById(id: string): Promise<Libro | null> {
