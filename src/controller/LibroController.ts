@@ -1,7 +1,7 @@
 import type {Request,Response} from 'express'
-import {GetAllCommands} from '@/commands/libro/GetAllCommands'
-import {GetAllPublicCommands} from '@/commands/libro/GetAllPublicCommands'
-import {GetAllPublicTodoCommands} from '@/commands/libro/GetAllPublicTodoCommands'
+//import {GetAllCommands} from '@/commands/libro/GetAllCommands'
+//import {GetAllPublicCommands} from '@/commands/libro/GetAllPublicCommands'
+//import {GetAllPublicTodoCommands} from '@/commands/libro/GetAllPublicTodoCommands'
 import {CreateLibroCommand} from '@/commands/libro/CreateLibroCommand'
 import {UpdateLibroCommand} from '@/commands/libro/UpdateLibroCommand'
 import {DeleteLibroCommand} from '@/commands/libro/DeleteLibroCommand'
@@ -9,16 +9,19 @@ import type {APIResponse} from '@/lib/types'
 import {z,type ZodIssue} from 'zod'
 import type {Libro} from '@prisma/client'
 import {LibroViewModel} from '@/viewModels/LibroViewModel'
+import {PrismaLibroDao} from '@/dao/PrismaLibroDao'
+import {LibrosExternosAppService} from '@/AppService/LibrosExternosAppService'
+
+const libroDao = new PrismaLibroDao();
 
 
 export const getAllLibro = async (req: Request, res: Response) => {
     try{
 
-    const command = new GetAllCommands();
-    const libros = await command.execute();
+   const libros = await libroDao.getAll();
 
 
-    let responseOk: APIResponse<LibroViewModel[]> = {
+    let responseOk: APIResponse<Libro[]> = {
         status: 'success',
         data: libros
     }
@@ -43,13 +46,15 @@ export const getAllLibro = async (req: Request, res: Response) => {
 export const getAllPublicLibro = async (req: Request, res: Response) => {
     try{
 
-    const command = new GetAllPublicCommands();
-    const libros = await command.execute();
-
+        // Consultar rl dao
+        // Mapear al viewmodel
+        // retornar el viewmodel
+   const libros = await libroDao.getAll();
+   const librosPublic = libros.map((libro) => LibroViewModel.toDto(libro));
 
     let responseOk: APIResponse<LibroViewModel[]> = {
         status: 'success',
-        data: libros
+        data: librosPublic
     }
     return res.status(201).json(responseOk)
 } catch (error) {
@@ -72,10 +77,15 @@ export const getAllPublicLibro = async (req: Request, res: Response) => {
 
 export const getAllPublicTodoLibro = async (req: Request, res: Response) => {
     try{
+        // Traes tus libros y los mapeas al viewmodel
+        // mandas llamar el appservice
+        // unes los dos arreglos, y retornas el resultado
 
-    const command = new GetAllPublicTodoCommands();
-    const libros = await command.execute();
+        //Este metodo ya viene con los libros mapeados del MVVM
+        const librosLocales = await libroDao.getAllPublic();
+        const librosExternos = await new LibrosExternosAppService().getAll();
 
+        const libros:LibroViewModel[] = [...librosLocales, ...librosExternos];
 
     let responseOk: APIResponse<LibroViewModel[]> = {
         status: 'success',
