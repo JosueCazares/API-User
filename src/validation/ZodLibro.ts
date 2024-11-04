@@ -5,6 +5,7 @@ export const ZodLibroObj = z.object({
     titulo: z.string(),
     autor: z.string(),
     genero: z.string(),
+    universidad: z.string(),
     estatus: z.enum([Estatus.ACTIVO,Estatus.INACTIVO])
 })
 export const ZodLibroObjPut = z.object({
@@ -12,6 +13,7 @@ export const ZodLibroObjPut = z.object({
     titulo: z.string(),
     autor: z.string(),
     genero: z.string(),
+    universidad: z.string(),
     estatus: z.enum([Estatus.ACTIVO,Estatus.INACTIVO])
 })
 

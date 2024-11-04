@@ -7,7 +7,8 @@ export class LibroViewModel{
       autor:libro.autor,
       genero:libro.genero,
       estatus:libro.estatus,
-      archivoPdf:libro.url
+      pdf_file:libro.url,
+      universidad:libro.universidad,
     }
   }
 }

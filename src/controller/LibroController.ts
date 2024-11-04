@@ -1,7 +1,4 @@
 import type {Request,Response} from 'express'
-//import {GetAllCommands} from '@/commands/libro/GetAllCommands'
-//import {GetAllPublicCommands} from '@/commands/libro/GetAllPublicCommands'
-//import {GetAllPublicTodoCommands} from '@/commands/libro/GetAllPublicTodoCommands'
 import {CreateLibroCommand} from '@/commands/libro/CreateLibroCommand'
 import {UpdateLibroCommand} from '@/commands/libro/UpdateLibroCommand'
 import {DeleteLibroCommand} from '@/commands/libro/DeleteLibroCommand'
@@ -11,6 +8,7 @@ import type {Libro} from '@prisma/client'
 import {LibroViewModel} from '@/viewModels/LibroViewModel'
 import {PrismaLibroDao} from '@/dao/PrismaLibroDao'
 import {LibrosExternosAppService} from '@/AppService/LibrosExternosAppService'
+import fs from 'fs';
 
 const libroDao = new PrismaLibroDao();
 
@@ -86,7 +84,7 @@ export const getAllPublicTodoLibro = async (req: Request, res: Response) => {
         const librosExternos = await new LibrosExternosAppService().getAll();
 
         const libros:LibroViewModel[] = [...librosLocales, ...librosExternos];
-
+        //console.log(libros);
     let responseOk: APIResponse<LibroViewModel[]> = {
         status: 'success',
         data: libros
@@ -119,9 +117,12 @@ export const createLibro = async (req: Request, res: Response) => {
               message: 'No se subió ningún archivo.'
             });
         }
-
+        const pdfPath = req.file.path;
+        const pdfBuffer = fs.readFileSync(pdfPath);
+        const pdfBase64 = pdfBuffer.toString('base64');
+        console.log(pdfBase64);
         const command = new CreateLibroCommand();
-        const newLibro = await command.execute(req.body,req.file.path);
+        const newLibro = await command.execute(req.body,pdfBase64);
 
         let responseOk: APIResponse<Libro> = {
             status: 'success',

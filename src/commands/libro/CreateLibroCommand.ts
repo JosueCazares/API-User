@@ -15,13 +15,13 @@ export class CreateLibroCommand{
             throw new z.ZodError(dataValidate);
         }
         return await libroDao.create({
-        
+            
             titulo: dataValidate.titulo,
             autor: dataValidate.autor,
             genero: dataValidate.genero,
             estatus: dataValidate.estatus,
-            url: urlPdf 
-         
+            url: urlPdf, 
+            universidad: dataValidate.universidad
         }) 
     }
 }

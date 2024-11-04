@@ -8,15 +8,29 @@ const API_ULISSES = import.meta.env.VITE_URL_API_ULISES;
 export class LibrosExternosAppService{
     async getAll():Promise <LibroViewModel[]>{
     try{
-        const responseJasso = await httpAPI<APIResponse<LibroViewModel[]>>('/', 'GET',undefined,{},API_JASSO);
-        const responseUlises = await httpAPI<APIResponse<LibroViewModel[]>>('/', 'GET',undefined,{},API_ULISSES);
-       
-        
+        if(!API_JASSO || !API_ULISSES){
+            throw new Error('No se han definido las URL de los servicios externos');
+        }
+        const responseJasso = await this.fetchApi(API_ULISSES);
+        const responseUlises = await this.fetchApi(API_ULISSES);
         const responsUnion = responseJasso.data?.concat(responseUlises.data ?? []);
         return responsUnion ?? [];
     }catch(e){
         console.error('Error en getUsuarios =>', e);
         throw e;
+    }
+    }
+
+    private async fetchApi(url:string):Promise<APIResponse<LibroViewModel[]>>{
+    try{
+        const response = await httpAPI<APIResponse<LibroViewModel[]>>('/', 'GET',undefined,{},url);
+        return {
+            status: response.status, // Ensure the status is included
+            data: response.data ?? []
+        };
+    }catch(e){
+        console.log(`Error en fetchApi => ${e}`);
+        return {status: 'error', error: e, data: []};
     }
     }
 }

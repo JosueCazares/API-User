@@ -17,6 +17,9 @@ app.use('/uploads',express.static(path.join(__dirname,'..', 'uploads')));
 const whitelist = env.DOMAIN_WHITELIST.split(',');
 //loop to whitelist to ensure request domain is on whitelist
 app.use(cors({
+    origin: '*',  // Permite solicitudes de cualquier origen
+}));
+/* app.use(cors({
     origin: function (origin, callback) {
         // !origin when origin is undefined (ie. browser, same origin, server to server or REST Tools) please remove it in production depending on use case
         if (whitelist.indexOf(origin as string) !== -1 || !origin) {
@@ -26,7 +29,7 @@ app.use(cors({
         }
     
     }
-}));
+})); */
 
 //health check
 app.get('/', (_, res: Response) => {
